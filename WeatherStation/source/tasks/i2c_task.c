@@ -1,11 +1,4 @@
-#ifndef tasks_h
-/**
- * Heartbeat task to just blink an led 1 a second. This should be converted into a status task.
- * Where the color and blinks mean something.
- */
-void heartbeat_task(void *pvParameters);
-
-
+#include "tasks.h"
 
 /**
  * Task does the following.
@@ -22,5 +15,7 @@ void heartbeat_task(void *pvParameters);
  * 	   char* array to put read bytes in
  * 	   queue* the return queue to put the results in.
  */
-void i2c_task(void *pvParameters);
-#endif
+void i2c_task(void *pvParameters){
+
+
+}

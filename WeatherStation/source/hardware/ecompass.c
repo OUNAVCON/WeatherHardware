@@ -28,7 +28,7 @@
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #include "fsl_debug_console.h"
-//#include "fsl_fxos.h"
+#include "ecompass/fsl_fxos.h"
 #include "board.h"
 #include "math.h"
 

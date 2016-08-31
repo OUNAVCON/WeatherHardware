@@ -75,7 +75,7 @@ int init(void)
 {
     adc16_config_t adc16ConfigStruct;
     adc16_channel_config_t adc16ChannelConfigStruct;
-    EnableIRQ(DEMO_ADC16_IRQn);
+    EnableIRQ(lightSensor_IRQn);
 
     //PRINTF("\r\nADC16 interrupt Example.\r\n");
 
@@ -92,9 +92,9 @@ int init(void)
      */
     ADC16_GetDefaultConfig(&adc16ConfigStruct);
     ADC16_Init(lightSensor_BASE, &adc16ConfigStruct);
-    ADC16_EnableHardwareTrigger(DEMO_ADC16_BASE, false); /* Make sure the software trigger is used. */
+    ADC16_EnableHardwareTrigger(lightSensor_BASE, false); /* Make sure the software trigger is used. */
 /*#if defined(FSL_FEATURE_ADC16_HAS_CALIBRATION) && FSL_FEATURE_ADC16_HAS_CALIBRATION
-    if (kStatus_Success == ADC16_DoAutoCalibration(DEMO_ADC16_BASE))
+    if (kStatus_Success == ADC16_DoAutoCalibration(lightSensor_BASE))
     {
         PRINTF("ADC16_DoAutoCalibration() Done.\r\n");
     }
@@ -128,7 +128,7 @@ int init(void)
          for the following conversion, it is necessary to assert the "enableInterruptOnConversionCompleted" every time
          for each command.
         */
-        ADC16_SetChannelConfig(DEMO_ADC16_BASE, DEMO_ADC16_CHANNEL_GROUP, &adc16ChannelConfigStruct);
+        ADC16_SetChannelConfig(lightSensor_BASE, lightSensor_CHANNEL_GROUP, &adc16ChannelConfigStruct);
         while (!g_Adc16ConversionDoneFlag)//TODO: This becomes the delay condition.
         {//burn time waiting for conversion to finish.
         }

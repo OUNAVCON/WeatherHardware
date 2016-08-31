@@ -72,7 +72,7 @@ volatile bool g_masterReadBegin = false;
  ******************************************************************************/
 
 /*!
- * @brief Main function
+ * @brief only initialize the i2c.
  */
 int init(void)
 {
@@ -364,4 +364,16 @@ void I2C_SLAVE_IRQHandler(void)
         g_slave_buff[g_slaveRxIndex] = EXAMPLE_I2C_SLAVE_BASEADDR->D;
         g_slaveRxIndex++;
     }
+}
+
+/**
+ * @
+ */
+void I2C_Read(char addressOfSlave, /**< [in] Address of the slave( with offset?). */
+		char numOfBytesToSend, /**< [in] Number of bytes to send to slave to start read. (1 based) */
+		char* bytesToSend, /**< [in] pointer to the array to send. */
+		char numBytesToRead, /**< [in] the number of bytes to read. */
+		char*bytesToRead /**< [out] pointer to the array of bytes read from the slave. */
+		){
+
 }
