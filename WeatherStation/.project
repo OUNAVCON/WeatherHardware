@@ -24,4 +24,10 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<variableList>
+		<variable>
+			<name>copy_PARENT</name>
+			<value>$%7BPARENT-3-ECLIPSE_HOME%7D/KSDK/SDK_2.0_FRDM-K22F/boards/frdmk22f/demo_apps/ecompass</value>
+		</variable>
+	</variableList>
 </projectDescription>

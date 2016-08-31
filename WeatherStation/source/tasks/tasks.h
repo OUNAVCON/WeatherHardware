@@ -1,4 +1,4 @@
 #ifndef tasks_h
 
-void hello_task(void *pvParameters);
+void heartbeat_task(void *pvParameters);
 #endif

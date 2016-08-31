@@ -38,12 +38,18 @@
 /* Function Name : BOARD_InitPins */
 void BOARD_InitPins(void)
 {
-    /* Initialize UART1 pins below */
-    /* Ungate the port clock */
-    CLOCK_EnableClock(kCLOCK_PortE);
+	/* Debug uart port mux config */
+	/* Enable uart port clock */
+	CLOCK_EnableClock(kCLOCK_PortE);
+	/* Affects PORTE_PCR0 register */
+	PORT_SetPinMux(PORTE, 0U, kPORT_MuxAlt3);
+	/* Affects PORTE_PCR1 register */
+	PORT_SetPinMux(PORTE, 1U, kPORT_MuxAlt3);
 
-    /* Affects PORTE_PCR0 register */
-    PORT_SetPinMux(PORTE, 0u, kPORT_MuxAlt3);
-    /* Affects PORTE_PCR1 register */
-    PORT_SetPinMux(PORTE, 1u, kPORT_MuxAlt3);
+	/* Enable LED port clock */
+	CLOCK_EnableClock(kCLOCK_PortA);
+	/* Led pin mux Configuration */
+	PORT_SetPinMux(PORTA, 1U, kPORT_MuxAsGpio);
 }
+
+

@@ -64,7 +64,7 @@ int main(void) {
   /* Add your code here */
 
   /* Create RTOS task */
-  xTaskCreate(hello_task, "Hello_task", configMINIMAL_STACK_SIZE, NULL, hello_task_PRIORITY, NULL);
+  xTaskCreate(heartbeat_task, "Hello_task", configMINIMAL_STACK_SIZE, NULL, hello_task_PRIORITY, NULL);
   vTaskStartScheduler();
 
   for(;;) { /* Infinite loop to avoid leaving the main function */
