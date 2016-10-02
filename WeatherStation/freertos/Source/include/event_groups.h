@@ -121,10 +121,10 @@ extern "C" {
  */
 typedef void * EventGroupHandle_t;
 
-/* 
+/*
  * The type that holds event bits always matches TickType_t - therefore the
  * number of bits it holds is set by configUSE_16_BIT_TICKS (16 bits if set to 1,
- * 32 bits if set to 0. 
+ * 32 bits if set to 0.
  *
  * \defgroup EventBits_t EventBits_t
  * \ingroup EventGroup
@@ -340,8 +340,8 @@ EventBits_t xEventGroupClearBits( EventGroupHandle_t xEventGroup, const EventBit
  * while interrupts are disabled, so protects event groups that are accessed
  * from tasks by suspending the scheduler rather than disabling interrupts.  As
  * a result event groups cannot be accessed directly from an interrupt service
- * routine.  Therefore xEventGroupClearBitsFromISR() sends a message to the 
- * timer task to have the clear operation performed in the context of the timer 
+ * routine.  Therefore xEventGroupClearBitsFromISR() sends a message to the
+ * timer task to have the clear operation performed in the context of the timer
  * task.
  *
  * @param xEventGroup The event group in which the bits are to be cleared.
@@ -350,8 +350,8 @@ EventBits_t xEventGroupClearBits( EventGroupHandle_t xEventGroup, const EventBit
  * For example, to clear bit 3 only, set uxBitsToClear to 0x08.  To clear bit 3
  * and bit 0 set uxBitsToClear to 0x09.
  *
- * @return If the request to execute the function was posted successfully then 
- * pdPASS is returned, otherwise pdFALSE is returned.  pdFALSE is returned 
+ * @return If the request to execute the function was posted successfully then
+ * pdPASS is returned, otherwise pdFALSE is returned.  pdFALSE is returned
  * if the timer service queue was full.
  *
  * Example usage:
@@ -491,8 +491,8 @@ EventBits_t xEventGroupSetBits( EventGroupHandle_t xEventGroup, const EventBits_
  * *pxHigherPriorityTaskWoken must be initialised to pdFALSE.  See the
  * example code below.
  *
- * @return If the request to execute the function was posted successfully then 
- * pdPASS is returned, otherwise pdFALSE is returned.  pdFALSE  is returned 
+ * @return If the request to execute the function was posted successfully then
+ * pdPASS is returned, otherwise pdFALSE is returned.  pdFALSE  is returned
  * if the timer service queue was full.
  *
  * Example usage:
@@ -521,8 +521,8 @@ EventBits_t xEventGroupSetBits( EventGroupHandle_t xEventGroup, const EventBits_
 		if( xResult == pdPASS )
 		{
 			// If xHigherPriorityTaskWoken is now set to pdTRUE then a context
-			// switch should be requested.  The macro used is port specific and 
-			// is either portYIELD_FROM_ISR() or portEND_SWITCHING_ISR() - 
+			// switch should be requested.  The macro used is port specific and
+			// is either portYIELD_FROM_ISR() or portEND_SWITCHING_ISR() -
 			// refer to the documentation page for the port being used.
 			portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
 		}

@@ -47,6 +47,9 @@
 
 #include "tasks/tasks.h"
 
+QueueHandle_t serialMessageQueue;
+
+
 
 /* Task priorities. */
 #define hello_task_PRIORITY (configMAX_PRIORITIES - 1)
@@ -61,10 +64,23 @@ int main(void) {
   BOARD_BootClockRUN();
   BOARD_InitDebugConsole();
 
-  /* Add your code here */
+  /* Create Queues */
+  /* Create a queue capable of containing 10 unsigned long values. */
+serialMessageQueue = xQueueCreate( 5, sizeof( ASerialMessage ) );
+
+  if( serialMessageQueue == NULL )
+  {
+      /* Queue was not created and must not be used. */
+  }
+
+
+
 
   /* Create RTOS task */
   xTaskCreate(heartbeat_task, "Hello_task", configMINIMAL_STACK_SIZE, NULL, hello_task_PRIORITY, NULL);
+  //xTaskCreate(i2c_task, "i2c_task", configMINIMAL_STACK_SIZE + 60, NULL, hello_task_PRIORITY, NULL);
+  xTaskCreate(lightSensor_task, "lightSensor_task", configMINIMAL_STACK_SIZE + 60, NULL, hello_task_PRIORITY, NULL);
+  xTaskCreate(serial_task, "serial_task", configMINIMAL_STACK_SIZE, NULL, hello_task_PRIORITY, NULL);
   vTaskStartScheduler();
 
   for(;;) { /* Infinite loop to avoid leaving the main function */

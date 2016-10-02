@@ -15,7 +15,4 @@
  * 	   char* array to put read bytes in
  * 	   queue* the return queue to put the results in.
  */
-void i2c_task(void *pvParameters){
 
-
-}
