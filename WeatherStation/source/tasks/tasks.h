@@ -37,4 +37,6 @@ void lightSensor_task(void *pvParameters);
 
 void serial_task(void *pvParameters);
 
+void windSpeed_task(void *pvParameters);
+
 #endif

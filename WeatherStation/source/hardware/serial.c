@@ -1,4 +1,4 @@
-#include "serial.h";
+#include "serial.h"
 
 #include "fsl_common.h"
 #include "fsl_port.h"
@@ -100,7 +100,7 @@ volatile uint16_t rxIndex; /* Index of the memory to save new arrived data. */
 /*!
  * @brief Application entry point.
  */
-int serial_init(void)
+void serial_init(void)
 {
     uart_config.srcclk = CLOCK_GetFreq(DEMO_UART_CLKSRC);
     uart_config.base = DEMO_UART;

@@ -54,6 +54,7 @@
 #endif /* BOARD_DEBUG_UART_BAUDRATE */
 
 /*! @brief The Flextimer instance/channel used for board */
+/*
 #define BOARD_FTM_BASEADDR FTM0
 #define BOARD_FTM_CHANNEL 5U
 #define BOARD_FTM_X_CHANNEL 0U
@@ -61,6 +62,7 @@
 #define BOARD_FTM_PERIOD_HZ 100U
 #define BOARD_FTM_IRQ_HANDLER FTM0_IRQHandler
 #define BOARD_FTM_IRQ_VECTOR FTM0_IRQn
+*/
 
 /*! @brief The bubble level demo information */
 #define BOARD_FXOS8700_ADDR 0x1C

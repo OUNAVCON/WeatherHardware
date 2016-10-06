@@ -17,8 +17,7 @@
  */
 void lightSensor_task(void *pvParameters) {
 
-	const TickType_t xDelay = 500 / portTICK_PERIOD_MS;
-	char id = 0;
+	const TickType_t xDelay = 5000 / portTICK_PERIOD_MS;
 	struct ASerialMessage pxRxedMessage;
 	extern QueueHandle_t serialMessageQueue;
 	int lightValue = 0;
