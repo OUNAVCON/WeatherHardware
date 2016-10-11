@@ -2,22 +2,77 @@
 
 //#include "fsl_debug_console.h"
 //#include "board.h"
+#include "fsl_common.h"
 #include "fsl_ftm.h"
 #include "pin_mux.h"
 #include "fsl_gpio.h"
 #include "fsl_port.h"
 #include "clock_config.h"
 
+
+/*!
+ * @brief Interrupt service function of pulse inputs.
+ *
+ */
+
+int windSpeedCounter = 0;
+int rainFallCounter = 0;
+
+void CAPTURE_IRQ_HANDLER(){
+	uint32_t interruptFlags = PORT_GetPinsInterruptFlags(CAPTURE_GPIO_PORT);
+	if(interruptFlags && 1<< WINDSPEED_GPIO_PIN){
+		/* Clear external interrupt flag. */
+		PORT_ClearPinsInterruptFlags(CAPTURE_GPIO_PORT, 1 << WINDSPEED_GPIO_PIN);
+    	/* Change state of button. */
+    	windSpeedCounter++;
+	}
+}
+
+
 void capture_init(void){
 
-	/* Debug uart port mux config */
-	/* Enable uart port clock */
+	/* Enable windspeed and rainfall input port clock */
 	CLOCK_EnableClock(kCLOCK_PortB);
-	/* Affects PORTE_PCR0 register */
-	PORT_SetPinMux(PORTB, 1U, kPORT_MuxAlt3); //FTM1_CH1
 
-    //EnableIRQ(I2C_MASTER_IRQ);
+	port_pin_config_t capturePinConfig;
+	//set pull down since interrupt is on rising edge.
+	capturePinConfig.pullSelect = kPORT_PullDown;
+	capturePinConfig.mux = kPORT_MuxAsGpio;
+	//wind speed
+	PORT_SetPinConfig(CAPTURE_GPIO_PORT, WINDSPEED_GPIO_PIN, &capturePinConfig);
+	//rain fall
+	//PORT_SetPinConfig(CAPTURE_GPIO_PORT, RAINFALL_GPIO_PIN, &capturePinConfig);
 
-    //NVIC_SetPriority(I2C_MASTER_IRQ, 1);
+	/* Affects PTB16 register */
+	gpio_pin_config_t capture_config = { kGPIO_DigitalInput, 0 };
+
+	/* windspeed pin init */
+	GPIO_PinInit(CAPTURE_GPIO, WINDSPEED_GPIO_PIN, &capture_config);
+	/* rainfall pin init */
+	GPIO_PinInit(CAPTURE_GPIO, RAINFALL_GPIO_PIN, &capture_config);
+
+	EnableIRQ(CAPTURE_IRQ);
+	/* set windspeed interrupt pin */
+	PORT_SetPinInterruptConfig(CAPTURE_GPIO_PORT, WINDSPEED_GPIO_PIN, kPORT_InterruptRisingEdge);
+	/* set rain fall interrupt pin */
+	PORT_SetPinInterruptConfig(CAPTURE_GPIO_PORT, RAINFALL_GPIO_PIN, kPORT_InterruptRisingEdge);
 
 }
+
+int readWindSpeedCounter(void){
+	return windSpeedCounter;
+}
+
+int readRainFallCounter(void){
+	return windSpeedCounter;
+}
+
+void clearWindSpeedCounter(void){
+	windSpeedCounter = 0;
+}
+
+void clearRainFallCounter(void){
+	rainFallCounter = 0;
+}
+
+

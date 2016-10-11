@@ -81,7 +81,7 @@ serialMessageQueue = xQueueCreate( 5, sizeof( ASerialMessage ) );
   xTaskCreate(i2c_task, "i2c_task", configMINIMAL_STACK_SIZE + 60, NULL, hello_task_PRIORITY, NULL);
   xTaskCreate(lightSensor_task, "lightSensor_task", configMINIMAL_STACK_SIZE + 60, NULL, hello_task_PRIORITY, NULL);
   xTaskCreate(serial_task, "serial_task", configMINIMAL_STACK_SIZE, NULL, hello_task_PRIORITY-1, NULL);
-  xTaskCreate(windSpeed_task, "windSpeed_task", configMINIMAL_STACK_SIZE, NULL, hello_task_PRIORITY-1, NULL);
+  xTaskCreate(capture_task, "windSpeed_task", configMINIMAL_STACK_SIZE, NULL, hello_task_PRIORITY-1, NULL);
 
   vTaskStartScheduler();
 

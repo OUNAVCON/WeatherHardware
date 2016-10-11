@@ -83,7 +83,7 @@ void serial_task(void *pvParameters) {
 	//  size_t n;
 	//serialMessageQueue
 	extern QueueHandle_t serialMessageQueue;
-	struct ASerialMessage pxRxedMessage;
+	ASerialMessage pxRxedMessage;
 	const TickType_t xDelay = 500 / portTICK_PERIOD_MS;
 	char result[20];
 	NVIC_SetPriority(DEMO_UART_RX_TX_IRQn, 5);
@@ -104,21 +104,26 @@ void serial_task(void *pvParameters) {
 			if (xQueueReceive(serialMessageQueue, &(pxRxedMessage),
 					(TickType_t ) 10)) {
 
-				switch(pxRxedMessage.messageType){
+				switch (pxRxedMessage.messageType) {
 				case TEMPERATURE:
-					strcpy(result,"{temperature:");
+					strcpy(result, "{temperature:");
 					break;
 				case HUMIDITY:
-					strcpy(result,"{humidity:");
+					strcpy(result, "{humidity:");
 					break;
 				case PRESSURE:
-					strcpy(result,"{pressure:");
+					strcpy(result, "{pressure:");
 					break;
 				case LIGHTSENSOR:
-					strcpy(result,"{lightSensor:");
+					strcpy(result, "{lightSensor:");
+					break;
+				case WINDSPEED:
+					strcpy(result, "{windSpeed:");
+					break;
+				case RAINFALL:
+					strcpy(result, "{rainFall:");
 					break;
 				}
-
 
 				strcat(result, pxRxedMessage.ucData);
 				strcat(result, "}\r\n");

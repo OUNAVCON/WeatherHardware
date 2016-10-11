@@ -13,41 +13,69 @@
 //TODO: Remove this once the digitalOutput.c has been created.
 //#include "board.h"
 #include "../hardware/capture.h"
+#include "../hardware/adc.h"
 
+/* The software timer period. */
+#define SW_TIMER_PERIOD_MS (1000 / portTICK_PERIOD_MS)
+/* The callback function. */
+static void SwTimerCallback(TimerHandle_t xTimer);
+
+static float rainFallCountsPerSecond = 0.0;
+static float windSpeedCountsPerSecond = 0.0;
+
+/*
+ * The capture_Init() sets up two gpio pins as inputs
+ * and enables the port change to fire an interrupt.
+ * The ISR increments a counter.
+ */
+void capture_task(void *pvParameters) {
+	const TickType_t xDelay = 5000 / portTICK_PERIOD_MS;
+	TimerHandle_t SwTimerHandle = NULL;
+	ASerialMessage pxRxedMessage;
+	extern QueueHandle_t serialMessageQueue;
+
+	capture_init();
+
+	/* Create the software timer. */
+	SwTimerHandle = xTimerCreate("pulseRates", /* Text name. */
+	SW_TIMER_PERIOD_MS, /* Timer period. */
+	pdTRUE, /* Enable auto reload. */
+	0, /* ID is not used. */
+	SwTimerCallback); /* The callback function. */
+	/* Start timer. */
+	xTimerStart(SwTimerHandle, 0);
+
+	for (;;) {
+
+		sprintf(pxRxedMessage.ucData, "%f", windSpeedCountsPerSecond);
+		pxRxedMessage.messageType = WINDSPEED;
+
+		// Send a pointer to a struct AMessage object.  Block if the
+		// queue is already full.
+		xQueueSend(serialMessageQueue, (void * ) &pxRxedMessage,
+				(TickType_t ) 5);
+
+		sprintf(pxRxedMessage.ucData, "%f", rainFallCountsPerSecond);
+		pxRxedMessage.messageType = RAINFALL;
+		xQueueSend(serialMessageQueue, (void * ) &pxRxedMessage,
+				(TickType_t ) 5);
+
+		vTaskDelay(xDelay);
+	}
+}
 
 /*!
- * @brief Task responsible for printing of "Hello world." message.
+ * @brief Software timer callback.
  */
-void windSpeed_task(void *pvParameters) {
-	capture_init();
-    ftm_config_t ftmInfo;
-    status_t status;
-	uint32_t currentCapture;
-	uint32_t statusCapture;
-	const TickType_t xDelay = 500 / portTICK_PERIOD_MS;
+static void SwTimerCallback(TimerHandle_t xTimer) {
+	int windSpeedCount = 0;
+	int rainFallCount = 0;
 
+	windSpeedCount = readWindSpeedCounter();
+	windSpeedCountsPerSecond = (float) windSpeedCount;
+	clearWindSpeedCounter();
 
-	FTM_GetDefaultConfig(&ftmInfo);
-    /* Initialize FTM module */
-	ftmInfo.bdmMode = kFTM_BdmMode_3;
-	ftmInfo.prescale = kFTM_Prescale_Divide_128;
-	ftmInfo.faultMode = kFTM_Fault_Disable;
-	ftmInfo.useGlobalTimeBase = true;
-    status = FTM_Init(BOARD_FTM_BASEADDR, &ftmInfo);
-    if(status != kStatus_Success){
-    	FTM_Deinit(BOARD_FTM_BASEADDR);
-    	for(;;){}
-    }
-
-	FTM_SetupInputCapture(BOARD_FTM_BASEADDR, BOARD_FIRST_FTM_CHANNEL, kFTM_FallingEdge,0);
-	FTM_StartTimer(BOARD_FTM_BASEADDR, kFTM_SystemClock);
-		for(;;){
-
-			//status = FTM_GetStatusFlags(BOARD_FTM_BASEADDR);
-			FTM_ClearStatusFlags(BOARD_FTM_BASEADDR, 0xFFFF);
-			statusCapture = BOARD_FTM_BASEADDR->CONTROLS[BOARD_FIRST_FTM_CHANNEL].CnSC;
-			currentCapture = BOARD_FTM_BASEADDR->CONTROLS[BOARD_FIRST_FTM_CHANNEL].CnV;
-
-			vTaskDelay(xDelay);
-			}
+	rainFallCount = readRainFallCounter();
+	rainFallCountsPerSecond = (float) rainFallCount;
+	clearRainFallCounter();
 }

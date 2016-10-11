@@ -7,7 +7,7 @@
 #include "clock_config.h"
 
 
-void init_heartbeat_LED(){
+void init_heartbeat_LED(void){
 	/* Define the init structure for the output LED pin*/
 	gpio_pin_config_t led_config = { kGPIO_DigitalOutput, 0, };
 

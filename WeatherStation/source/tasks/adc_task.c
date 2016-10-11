@@ -18,15 +18,17 @@
 void lightSensor_task(void *pvParameters) {
 
 	const TickType_t xDelay = 5000 / portTICK_PERIOD_MS;
-	struct ASerialMessage pxRxedMessage;
+	ASerialMessage pxRxedMessage;
 	extern QueueHandle_t serialMessageQueue;
 	int lightValue = 0;
 
-	char data[20] = "";
 
 	init_lightSensor();
 
 	for (;;) {
+		//TODO: ADC should take successive measurements,
+		// aveages them, then use dma to transefer them to
+		// where this task just reads the variables location.
 		lightValue = getLightSensorValue();
 		sprintf(pxRxedMessage.ucData,"%d",lightValue);
 		//strncpy(&pxRxedMessage.ucData, &data, 20);

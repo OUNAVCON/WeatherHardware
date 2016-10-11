@@ -10,6 +10,7 @@
 //TODO: Remove this once the digitalOutput.c has been created.
 #include "board.h"
 #include "../hardware/digitalOutput.h"
+#include "tasks/tasks.h"
 
 
 /*!

@@ -104,7 +104,12 @@ i2c_slave_handle_t g_s_handle;
 
 
 
-
+/*
+ * TODO: read BMP
+ * 1. get calibration data from BMP180
+ * 2. periodically get updated data
+ * 3. use an enum to toggle between pressure and temperature reads.
+ */
 void i2c_task(void *pvParameters)
 {
 	SemaphoreHandle_t transerSemaphore;
@@ -116,7 +121,7 @@ void i2c_task(void *pvParameters)
 
     uint32_t sourceClock;
     status_t status;
-	struct ASerialMessage pxRxedMessage;
+	ASerialMessage pxRxedMessage;
 	extern QueueHandle_t serialMessageQueue;
 
 	BMP180_Parameters parameters;
