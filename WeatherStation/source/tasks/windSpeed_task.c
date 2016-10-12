@@ -14,6 +14,7 @@
 //#include "board.h"
 #include "../hardware/capture.h"
 #include "../hardware/adc.h"
+#include "../algorithms/weather.h"
 
 /* The software timer period. */
 #define SW_TIMER_PERIOD_MS (1000 / portTICK_PERIOD_MS)
@@ -31,8 +32,8 @@ static float windSpeedCountsPerSecond = 0.0;
 void capture_task(void *pvParameters) {
 	const TickType_t xDelay = 5000 / portTICK_PERIOD_MS;
 	TimerHandle_t SwTimerHandle = NULL;
-	ASerialMessage pxRxedMessage;
-	extern QueueHandle_t serialMessageQueue;
+	AWeatherMessage pxRxedMessage;
+	extern QueueHandle_t weatherMessageQueue;
 
 	capture_init();
 
@@ -47,17 +48,16 @@ void capture_task(void *pvParameters) {
 
 	for (;;) {
 
-		sprintf(pxRxedMessage.ucData, "%f", windSpeedCountsPerSecond);
+		pxRxedMessage.weather_data.current = windSpeedCountsPerSecond;
 		pxRxedMessage.messageType = WINDSPEED;
-
 		// Send a pointer to a struct AMessage object.  Block if the
 		// queue is already full.
-		xQueueSend(serialMessageQueue, (void * ) &pxRxedMessage,
+		xQueueSend(weatherMessageQueue, (void * ) &pxRxedMessage,
 				(TickType_t ) 5);
 
-		sprintf(pxRxedMessage.ucData, "%f", rainFallCountsPerSecond);
+		pxRxedMessage.weather_data.current = rainFallCountsPerSecond;
 		pxRxedMessage.messageType = RAINFALL;
-		xQueueSend(serialMessageQueue, (void * ) &pxRxedMessage,
+		xQueueSend(weatherMessageQueue, (void * ) &pxRxedMessage,
 				(TickType_t ) 5);
 
 		vTaskDelay(xDelay);

@@ -47,6 +47,7 @@
 
 #include "tasks.h"
 #include "../hardware/serial.h"
+#include "../algorithms/weather.h"
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
@@ -76,21 +77,25 @@ struct rtos_uart_config uart_config = { .baudrate = 115200, .parity =
  ******************************************************************************/
 
 /*!
- * @brief Task responsible for printing of "Hello world." message.
+ * @brief Task weather task
  */
-void serial_task(void *pvParameters) {
-	// int error;
-	//  size_t n;
-	//serialMessageQueue
-	extern QueueHandle_t serialMessageQueue;
-	ASerialMessage pxRxedMessage;
+void weather_task(void *pvParameters) {
+	WEATHER weather;
+	extern QueueHandle_t weatherMessageQueue;
+	AWeatherMessage pxRxedMessage;
+
 	const TickType_t xDelay = 500 / portTICK_PERIOD_MS;
+
 	char result[20];
+
+
+	//TODO: config move to serial.c
 	NVIC_SetPriority(DEMO_UART_RX_TX_IRQn, 5);
 	uart_config.srcclk = CLOCK_GetFreq(DEMO_UART_CLKSRC);
 	uart_config.base = DEMO_UART;
 
 	init_serial();
+	getDefaultWeather(&weather);
 
 	if (0 > UART_RTOS_Init(&handle, &t_handle, &uart_config)) {
 		//PRINTF("Error during UART initialization.\r\n");
@@ -98,43 +103,41 @@ void serial_task(void *pvParameters) {
 	}
 
 	for (;;) {
-		if (serialMessageQueue != 0) {
+		if (weatherMessageQueue != 0) {
 			// Receive a message on the created queue.  Block for 10 ticks if a
 			// message is not immediately available.
-			if (xQueueReceive(serialMessageQueue, &(pxRxedMessage),
+			if (xQueueReceive(weatherMessageQueue, &(pxRxedMessage),
 					(TickType_t ) 10)) {
 
 				switch (pxRxedMessage.messageType) {
 				case TEMPERATURE:
-					strcpy(result, "{temperature:");
+					weather.temperature.current = pxRxedMessage.weather_data.current;
+					//TODO: calculate max and min.
 					break;
 				case HUMIDITY:
-					strcpy(result, "{humidity:");
+					weather.humidity.current = pxRxedMessage.weather_data.current;
 					break;
 				case PRESSURE:
-					strcpy(result, "{pressure:");
+					weather.pressure.current = pxRxedMessage.weather_data.current;
 					break;
 				case LIGHTSENSOR:
-					strcpy(result, "{lightSensor:");
+					weather.ambientLight.current = pxRxedMessage.weather_data.current;
 					break;
 				case WINDSPEED:
-					strcpy(result, "{windSpeed:");
+					weather.windSpeed.current = pxRxedMessage.weather_data.current;
 					break;
 				case RAINFALL:
-					strcpy(result, "{rainFall:");
+					weather.rainFall.current = pxRxedMessage.weather_data.current;
 					break;
 				}
 
-				strcat(result, pxRxedMessage.ucData);
-				strcat(result, "}\r\n");
 				// pcRxedMessage now points to the struct AMessage variable posted
 				// by vATask.
-				if (0
+				/*if (0
 						> UART_RTOS_Send(&handle, (uint8_t *) result,
 								strlen(result))) {
-					//PRINTF("Error during UART send.\r\n");
 					vTaskSuspend(NULL);
-				}
+				}*/
 			}
 		}
 

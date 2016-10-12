@@ -46,8 +46,9 @@
 #include "timers.h"
 
 #include "tasks/tasks.h"
+#include "algorithms/weather.h"
 
-QueueHandle_t serialMessageQueue;
+QueueHandle_t weatherMessageQueue;
 
 
 
@@ -65,10 +66,9 @@ int main(void) {
   BOARD_InitDebugConsole();
 
   /* Create Queues */
-  /* Create a queue capable of containing 10 unsigned long values. */
-serialMessageQueue = xQueueCreate( 5, sizeof( ASerialMessage ) );
+  weatherMessageQueue = xQueueCreate( 5, sizeof( AWeatherMessage ) );
 
-  if( serialMessageQueue == NULL )
+  if( weatherMessageQueue == NULL )
   {
       /* Queue was not created and must not be used. */
   }
@@ -80,7 +80,7 @@ serialMessageQueue = xQueueCreate( 5, sizeof( ASerialMessage ) );
   xTaskCreate(heartbeat_task, "Hello_task", configMINIMAL_STACK_SIZE, NULL, hello_task_PRIORITY, NULL);
   xTaskCreate(i2c_task, "i2c_task", configMINIMAL_STACK_SIZE + 60, NULL, hello_task_PRIORITY, NULL);
   xTaskCreate(lightSensor_task, "lightSensor_task", configMINIMAL_STACK_SIZE + 60, NULL, hello_task_PRIORITY, NULL);
-  xTaskCreate(serial_task, "serial_task", configMINIMAL_STACK_SIZE, NULL, hello_task_PRIORITY-1, NULL);
+  xTaskCreate(weather_task, "serial_task", configMINIMAL_STACK_SIZE, NULL, hello_task_PRIORITY-1, NULL);
   xTaskCreate(capture_task, "windSpeed_task", configMINIMAL_STACK_SIZE, NULL, hello_task_PRIORITY-1, NULL);
 
   vTaskStartScheduler();

@@ -6,17 +6,6 @@
  */
 
 
-typedef enum {TEMPERATURE, HUMIDITY, PRESSURE, LIGHTSENSOR, WINDSPEED, RAINFALL} weather;
-
-typedef struct
-{
-	weather messageType;
-    char ucData[ 20 ];
-}ASerialMessage;
-
-
-
-
 /**
  * Task does the following.
  *
@@ -38,7 +27,7 @@ void i2c_task(void *pvParameters);
 
 void lightSensor_task(void *pvParameters);
 
-void serial_task(void *pvParameters);
+void weather_task(void *pvParameters);
 
 void capture_task(void *pvParameters);
 

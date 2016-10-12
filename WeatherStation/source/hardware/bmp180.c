@@ -18,19 +18,29 @@ void convertCalibrationToCoefficients(BMP180_Parameters* parameters, uint8_t* da
  parameters->MD = createSignedInt(data, 20);
 }
 
+void calculateUncompensatedTemperature(BMP180_Parameters* parameters, uint8_t* data){
+	uint16_t ut = createUnsignedInt(data, 0);
+	parameters->uncompensatedTemperature = ut;
+}
+
 /**
  * Convert uncompensated temperatures to true temperature
  * @pre the coefficients and the uncompensated temperature values are populated.
  */
-void calculateTrueTemperature(BMP180_Parameters* parameters){
+float calculateTrueTemperature(BMP180_Parameters* parameters){
+	int16_t x1, x2, b5;
 
+	x1 = (parameters->uncompensatedTemperature - parameters->AC6) * parameters->AC5 / (1<<15);
+	x2 = (parameters->MC * 1<<11)/(x1 + parameters->MD);
+	b5 = x1+x2;
+	return ((float)((b5 + 8)/(1<<4)))*0.1;
 }
 
 /**
  * Convert uncompensated pressure to true pressure
  * @pre the coefficients and the uncompensated pressure values are populated.
  */
-void calculateTruePressure(BMP180_Parameters* parameters){
+float calculateTruePressure(BMP180_Parameters* parameters){
 
 }
 
@@ -53,4 +63,32 @@ int16_t createSignedInt(uint8_t* data, int startByteAddress){
 	returnResult = returnResult <<8;
 	returnResult += lowerValue;
 return ((int16_t)returnResult);
+}
+
+
+void testBMPCode(void){
+	BMP180_Parameters parameters;
+	parameters.AC1 = 408;
+	parameters.AC2 = -72;
+	parameters.AC3 = -14383;
+	parameters.AC4 = 32741;
+	parameters.AC5 = 32757;
+	parameters.AC6 = 23153;
+	parameters.B1 = 6190;
+	parameters.B2 = 4;
+	parameters.MB = -32768;
+	parameters.MC = -8711;
+	parameters.MD = 2868;
+
+	parameters.uncompensatedTemperature = 27898;
+	parameters.oss = 0;
+	parameters.uncompensatedPressure = 23843;
+
+	const float Temp = 15.0;
+	const float Press = 69964;
+	float calculatedTemp;
+	float calulatedPressure;
+
+	calculatedTemp = calculateTrueTemperature(&parameters);
+
 }

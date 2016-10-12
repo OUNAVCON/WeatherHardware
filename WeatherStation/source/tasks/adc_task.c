@@ -9,6 +9,7 @@
 //TODO: Remove this once the digitalOutput.c has been created.
 #include "board.h"
 #include "../hardware/adc.h"
+#include "../algorithms/weather.h"
 
 
 
@@ -18,9 +19,11 @@
 void lightSensor_task(void *pvParameters) {
 
 	const TickType_t xDelay = 5000 / portTICK_PERIOD_MS;
-	ASerialMessage pxRxedMessage;
-	extern QueueHandle_t serialMessageQueue;
-	int lightValue = 0;
+	AWeatherMessage pxRxedMessage;
+	WEATHER_ELEMENT_T ambientLight;
+	extern QueueHandle_t weatherMessageQueue;
+
+	pxRxedMessage.weather_data = ambientLight;
 
 
 	init_lightSensor();
@@ -29,15 +32,14 @@ void lightSensor_task(void *pvParameters) {
 		//TODO: ADC should take successive measurements,
 		// aveages them, then use dma to transefer them to
 		// where this task just reads the variables location.
-		lightValue = getLightSensorValue();
-		sprintf(pxRxedMessage.ucData,"%d",lightValue);
+		pxRxedMessage.weather_data.current = getLightSensorValue();
 		//strncpy(&pxRxedMessage.ucData, &data, 20);
 		//pxRxedMessage->ucData = data;
 		pxRxedMessage.messageType = LIGHTSENSOR;
 
 		    // Send a pointer to a struct AMessage object.  Don't block if the
 		    // queue is already full.
-		    xQueueSend( serialMessageQueue, ( void * ) &pxRxedMessage, ( TickType_t ) 5 );
+		    xQueueSend( weatherMessageQueue, ( void * ) &pxRxedMessage, ( TickType_t ) 5 );
 
 			// ... Rest of task code.
 

@@ -16,7 +16,6 @@ void send_serial(char a);
 
 
 
-
 extern struct rtos_uart_config uart_config;
 extern struct _uart_handle t_handle;
 extern uart_rtos_handle_t handle;
