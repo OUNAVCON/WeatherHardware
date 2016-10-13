@@ -24,10 +24,11 @@ typedef struct {
 	int16_t MB; //0xBA,0xBB
 	int16_t MC; //0xBC,0xBD
 	int16_t MD; //0xBE,0xBF
+	int16_t B5; //calculated from true temperature, used to calculate pressure.
 	uint16_t uncompensatedTemperature;
-	int32_t uncompensatedPressure;
-	int32_t trueTemperature;
-	int32_t truePressure;
+	uint32_t uncompensatedPressure;
+	float trueTemperature; // in xx.x degrees celsius
+	float truePressure; //pressure in xxx.xxx kPa.
 	uint8_t oss;
 
 } BMP180_Parameters;
@@ -38,7 +39,15 @@ typedef struct {
 uint16_t createUnsignedInt(uint8_t* data, int startByteAddress);
 int16_t createSignedInt(uint8_t* data, int startByteAddress);
 
+/*
+ * convert the data bytes to the uncompensated temperature
+ */
 void calculateUncompensatedTemperature(BMP180_Parameters* parameters, uint8_t* data);
+
+/*
+ * convert the data bytes to the uncompensated pressure
+ */
+void calculateUncompensatedPressure(BMP180_Parameters* parameters, uint8_t* data);
 
 /**
  * After retrieving the array of coefficients convert them to coefficients.
@@ -57,6 +66,10 @@ float calculateTrueTemperature(BMP180_Parameters* parameters);
  */
 float calculateTruePressure(BMP180_Parameters* parameters);
 
+
+/*
+ * Test method to confirm the true temp and pressures are calculated correctly.
+ */
 void testBMPCode(void);
 
 #endif /* SOURCE_HARDWARE_BMP180_H_ */

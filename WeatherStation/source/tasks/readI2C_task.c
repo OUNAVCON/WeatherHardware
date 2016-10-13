@@ -67,26 +67,40 @@ void i2c_task(void *pvParameters) {
 	I2C_init();
 	float temp = 0.0;
 
-
 	//start of eeprom memory address
-	sendBuffer[0]=0xAA;
+	sendBuffer[0] = 0xAA;
 	//Get calibration Data for BMP180
 	I2C_Read(0x77U, 1, &sendBuffer[0], 22, &receiveBuffer[0]);
 	convertCalibrationToCoefficients(&parameters, &receiveBuffer[0]);
 
 	for (;;) {
 		//initiate a temperature conversion
-		sendBuffer[0]=0xF4;
-		sendBuffer[1]=0x2E;
+		sendBuffer[0] = 0xF4;
+		sendBuffer[1] = 0x2E;
 		I2C_Read(0x77U, 2, &sendBuffer[0], 0, NULL);
 		//wait 4.5 ms
 		vTaskDelay(1);
-		sendBuffer[0]=0xF6;
+		//read adc conversion value.
+		sendBuffer[0] = 0xF6;
 		I2C_Read(0x77U, 1, &sendBuffer[0], 2, &receiveBuffer[0]);
-		calculateUncompensatedTemperature(&parameters,&receiveBuffer[0]);
+		calculateUncompensatedTemperature(&parameters, &receiveBuffer[0]);
 		temp = calculateTrueTemperature(&parameters);
 
 		//testBMPCode();
+		vTaskDelay(xDelay);
+
+		//initiate a pressure conversion
+
+		sendBuffer[0] = 0xF4;
+		sendBuffer[1] = 0x34 + (parameters.oss << 6);
+		I2C_Read(0x77U, 2, &sendBuffer[0], 0, NULL);
+		//wait 4.5 ms
+		vTaskDelay(1);
+		//read adc conversion value.
+		sendBuffer[0] = 0xF6;
+		I2C_Read(0x77U, 1, &sendBuffer[0], 3, &receiveBuffer[0]);
+		calculateUncompensatedPressure(&parameters, &receiveBuffer[0]);
+		temp = calculateTruePressure(&parameters);
 		vTaskDelay(xDelay);
 	}
 }

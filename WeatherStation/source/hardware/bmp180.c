@@ -18,8 +18,13 @@ void convertCalibrationToCoefficients(BMP180_Parameters* parameters, uint8_t* da
  parameters->MD = createSignedInt(data, 20);
 }
 
+void calculateUncompensatedPressure(BMP180_Parameters* parameters, uint8_t* data){
+	uint32_t up = ((data[0]<<16) + (data[1]<<8) + data[2]) >> (8-parameters->oss);
+	parameters->uncompensatedPressure = up;
+}
+
 void calculateUncompensatedTemperature(BMP180_Parameters* parameters, uint8_t* data){
-	uint16_t ut = createUnsignedInt(data, 0);
+	uint32_t ut = createUnsignedInt(data, 0);
 	parameters->uncompensatedTemperature = ut;
 }
 
@@ -28,12 +33,13 @@ void calculateUncompensatedTemperature(BMP180_Parameters* parameters, uint8_t* d
  * @pre the coefficients and the uncompensated temperature values are populated.
  */
 float calculateTrueTemperature(BMP180_Parameters* parameters){
-	int16_t x1, x2, b5;
+	int16_t x1, x2;
 
 	x1 = (parameters->uncompensatedTemperature - parameters->AC6) * parameters->AC5 / (1<<15);
 	x2 = (parameters->MC * 1<<11)/(x1 + parameters->MD);
-	b5 = x1+x2;
-	return ((float)((b5 + 8)/(1<<4)))*0.1;
+	parameters->B5 = x1+x2;
+	parameters->trueTemperature = ((float)((parameters->B5 + 8)/(1<<4)))*0.1;
+	return parameters->trueTemperature;
 }
 
 /**
@@ -41,7 +47,33 @@ float calculateTrueTemperature(BMP180_Parameters* parameters){
  * @pre the coefficients and the uncompensated pressure values are populated.
  */
 float calculateTruePressure(BMP180_Parameters* parameters){
+	int16_t x1, x2, x3, b3, b6, x11;
+	uint16_t b4;
+	uint32_t b7, p, x4;
 
+	b6 = (parameters->B5 - 4000);
+	x1 = (parameters->B2 * (b6 * (b6/(1<<12))))/(1<<11);
+	x2 = (parameters->AC2 * b6) / (1<<11);
+	x3 = x1+x2;
+	b3 = (((parameters->AC1 * 4 + x3)<<parameters->oss)+2)/4;
+	x1 = parameters->AC3 * b6 / (1<<13);
+	x2 = parameters->B1 * (b6 * b6/(1<<12)) / (1<<16);
+	x3 = ((x1 + x2) +2)/(1<<2);
+	b4 = parameters->AC4 * ((uint16_t)(x3 + 32768)) / (1<<15);
+	b7 = (uint16_t)(parameters->uncompensatedPressure - b3) * (50000 >> parameters->oss);
+	if(b7 < 0x80000000){
+		p = (b7 * 2) / b4;
+	}else{
+		p = (b7/b4)*2;
+	}
+
+	x4 = (p / (1<<8)) * (p / (1<<8));
+	x4 = (x4 * 3038)/(1<<16);
+	x2 = (-7357 * p)/(1<<16);
+	x11 = (x4 + x2 + 3791)/(1<<4);
+	p = p + x11;
+	parameters->truePressure = ((float)p)/1000.0;
+	return parameters->truePressure;
 }
 
 /**
@@ -90,5 +122,6 @@ void testBMPCode(void){
 	float calulatedPressure;
 
 	calculatedTemp = calculateTrueTemperature(&parameters);
+	calculatedTemp = calculateTruePressure(&parameters);
 
 }
