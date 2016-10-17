@@ -7,6 +7,9 @@
 #include "weather.h"
 #include <string.h>
 #include <stdio.h>
+//#include <strings.h>
+#include <stdlib.h>
+#include "FreeRTOS.h"
 
 void getDefaultWeather(WEATHER* weather) {
 	WEATHER_ELEMENT_T temp, rh, press, ws, rf, am;
@@ -20,33 +23,30 @@ void getDefaultWeather(WEATHER* weather) {
 
 }
 
-void createJSONFromWeather(WEATHER* weather, char* result) {
-	char temp[10];
+char result[128];
 
-	strcpy(result, "{weather:{");
-	strcat(result, "{temperature:");
-	sprintf(temp, "3.2%f", weather->temperature.current);
-	strcat(result, &temp[0]);
-	strcat(result, "},");
-	strcat(result, "{humidity:");
-	sprintf(temp, "3.2%f", weather->humidity.current);
-	strcat(result, &temp[0]);
-	strcat(result, "},");
-	strcat(result, "{pressure:");
-	sprintf(temp, "3.2%f", weather->pressure.current);
-	strcat(result, &temp[0]);
-	strcat(result, "},");
-	strcat(result, "{lightSensor:");
-	sprintf(temp, "8.%f", weather->ambientLight.current);
-	strcat(result, &temp[0]);
-	strcat(result, "},");
-	strcat(result, "{windSpeed:");
-	sprintf(temp, "3.2%f", weather->windSpeed.current);
-	strcat(result, &temp[0]);
-	strcat(result, "},");
-	strcat(result, "{rainFall:");
-	sprintf(temp, "3.2%f", weather->rainFall.current);
-	strcat(result, &temp[0]);
-	strcat(result, "}}}");
+char* createJSONFromWeather(WEATHER* weather) {
+	char temp[16];
 
+	strcpy(result, "{weather:{temperature:");
+	sprintf(temp, "%d", (int16_t)(weather->temperature.current*10));
+	strcat(result, temp);
+	strcat(result, ",humidity:");
+	sprintf(temp, "%d", (int16_t)weather->humidity.current);
+	strcat(result, temp);
+	strcat(result, ",pressure:");
+	sprintf(temp, "%d",(int16_t)( weather->pressure.current*100));
+	strcat(result, temp);
+	strcat(result, ",ambientLight:");
+	sprintf(temp, "%d", (int16_t)weather->ambientLight.current);
+	strcat(result, temp);
+	strcat(result, ",windSpeed:");
+	sprintf(temp, "%d", (int16_t)weather->windSpeed.current);
+	strcat(result, temp);
+	strcat(result, ",rainFall:");
+	sprintf(temp, "%f", weather->rainFall.current);
+	strcat(result, temp);
+	strcat(result, "}}\r\n");
+
+	return &result[0];
 }

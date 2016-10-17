@@ -19,8 +19,8 @@
 void lightSensor_task(void *pvParameters) {
 
 	const TickType_t xDelay = 5000 / portTICK_PERIOD_MS;
-	AWeatherMessage pxRxedMessage;
 	WEATHER_ELEMENT_T ambientLight;
+	AWeatherMessage pxRxedMessage;
 	extern QueueHandle_t weatherMessageQueue;
 
 	pxRxedMessage.weather_data = ambientLight;
@@ -40,8 +40,6 @@ void lightSensor_task(void *pvParameters) {
 		    // Send a pointer to a struct AMessage object.  Don't block if the
 		    // queue is already full.
 		    xQueueSend( weatherMessageQueue, ( void * ) &pxRxedMessage, ( TickType_t ) 5 );
-
-			// ... Rest of task code.
 
 		vTaskDelay(xDelay);
 	}

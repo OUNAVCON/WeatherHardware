@@ -66,6 +66,9 @@ void i2c_task(void *pvParameters) {
 	parameters.oss = 0;
 	I2C_init();
 	float temp = 0.0;
+	AWeatherMessage pxRxedMessage;
+	extern QueueHandle_t weatherMessageQueue;
+
 
 	//start of eeprom memory address
 	sendBuffer[0] = 0xAA;
@@ -86,6 +89,18 @@ void i2c_task(void *pvParameters) {
 		calculateUncompensatedTemperature(&parameters, &receiveBuffer[0]);
 		temp = calculateTrueTemperature(&parameters);
 
+		//TODO: ADC should take successive measurements,
+		// aveages them, then use dma to transefer them to
+		// where this task just reads the variables location.
+		pxRxedMessage.weather_data.current = temp;
+		//strncpy(&pxRxedMessage.ucData, &data, 20);
+		//pxRxedMessage->ucData = data;
+		pxRxedMessage.messageType = TEMPERATURE;
+
+		// Send a pointer to a struct AMessage object.  Don't block if the
+		// queue is already full.
+		xQueueSend( weatherMessageQueue, ( void * ) &pxRxedMessage, ( TickType_t ) 1 );
+
 		//testBMPCode();
 		vTaskDelay(xDelay);
 
@@ -101,6 +116,19 @@ void i2c_task(void *pvParameters) {
 		I2C_Read(0x77U, 1, &sendBuffer[0], 3, &receiveBuffer[0]);
 		calculateUncompensatedPressure(&parameters, &receiveBuffer[0]);
 		temp = calculateTruePressure(&parameters);
+
+		//TODO: ADC should take successive measurements,
+		// aveages them, then use dma to transefer them to
+		// where this task just reads the variables location.
+		pxRxedMessage.weather_data.current = temp;
+		//strncpy(&pxRxedMessage.ucData, &data, 20);
+		//pxRxedMessage->ucData = data;
+		pxRxedMessage.messageType = PRESSURE;
+
+		// Send a pointer to a struct AMessage object.  Don't block if the
+		// queue is already full.
+		xQueueSend( weatherMessageQueue, ( void * ) &pxRxedMessage, ( TickType_t ) 1 );
+
 		vTaskDelay(xDelay);
 	}
 }

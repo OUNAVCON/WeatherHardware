@@ -30,5 +30,6 @@ void lightSensor_task(void *pvParameters);
 void weather_task(void *pvParameters);
 
 void capture_task(void *pvParameters);
+void serial_task(void *pvParameters);
 
 #endif

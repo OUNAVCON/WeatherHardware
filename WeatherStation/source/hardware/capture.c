@@ -15,8 +15,8 @@
  *
  */
 
-int windSpeedCounter = 0;
-int rainFallCounter = 0;
+static int windSpeedCounter = 0;
+static int rainFallCounter = 0;
 
 void CAPTURE_IRQ_HANDLER(){
 	uint32_t interruptFlags = PORT_GetPinsInterruptFlags(CAPTURE_GPIO_PORT);
@@ -25,6 +25,11 @@ void CAPTURE_IRQ_HANDLER(){
 		PORT_ClearPinsInterruptFlags(CAPTURE_GPIO_PORT, 1 << WINDSPEED_GPIO_PIN);
     	/* Change state of button. */
     	windSpeedCounter++;
+	} else if(interruptFlags && 1<< RAINFALL_GPIO_PIN){
+		/* Clear external interrupt flag. */
+		PORT_ClearPinsInterruptFlags(CAPTURE_GPIO_PORT, 1 << RAINFALL_GPIO_PIN);
+    	/* Change state of button. */
+    	rainFallCounter++;
 	}
 }
 

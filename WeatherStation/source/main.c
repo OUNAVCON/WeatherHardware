@@ -63,7 +63,7 @@ int main(void) {
   /* Init board hardware. */
   BOARD_InitPins();
   BOARD_BootClockRUN();
-  BOARD_InitDebugConsole();
+ // BOARD_InitDebugConsole();
 
   /* Create Queues */
   weatherMessageQueue = xQueueCreate( 5, sizeof( AWeatherMessage ) );
@@ -73,14 +73,14 @@ int main(void) {
       /* Queue was not created and must not be used. */
   }
 
-
+//for DHT11 code look here https://github.com/ErichStyger/mcuoneclipse/blob/master/Examples/KDS/FRDM-KL25Z/FRDM-KL25Z_DHT11/Sources/DHTxx.c
 
 
   /* Create RTOS task */
   xTaskCreate(heartbeat_task, "Hello_task", configMINIMAL_STACK_SIZE, NULL, hello_task_PRIORITY, NULL);
   xTaskCreate(i2c_task, "i2c_task", configMINIMAL_STACK_SIZE + 60, NULL, hello_task_PRIORITY, NULL);
   xTaskCreate(lightSensor_task, "lightSensor_task", configMINIMAL_STACK_SIZE + 60, NULL, hello_task_PRIORITY, NULL);
-  xTaskCreate(weather_task, "serial_task", configMINIMAL_STACK_SIZE, NULL, hello_task_PRIORITY-1, NULL);
+  xTaskCreate(weather_task, "weather_task", configMINIMAL_STACK_SIZE, NULL, hello_task_PRIORITY-1, NULL);
   xTaskCreate(capture_task, "windSpeed_task", configMINIMAL_STACK_SIZE, NULL, hello_task_PRIORITY-1, NULL);
 
   vTaskStartScheduler();

@@ -27,6 +27,6 @@ typedef struct
 
 void getDefaultWeather(WEATHER* weather);
 
-void createJSONFromWeather(WEATHER* weather, char* result);
+char* createJSONFromWeather(WEATHER* weather);
 
 #endif

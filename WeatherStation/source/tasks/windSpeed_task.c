@@ -6,7 +6,6 @@
 #include "queue.h"
 #include "timers.h"
 
-#include "fsl_ftm.h"
 
 #include "pin_mux.h"
 #include "clock_config.h"
