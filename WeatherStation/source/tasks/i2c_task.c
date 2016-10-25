@@ -51,12 +51,6 @@
 #include "../hardware/bmp180.h"
 #include "../algorithms/weather.h"
 
-/*
- * TODO: read BMP
- * 1. get calibration data from BMP180
- * 2. periodically get updated data
- * 3. use an enum to toggle between pressure and temperature reads.
- */
 void i2c_task(void *pvParameters) {
 
 	const TickType_t xDelay = 5000 / portTICK_PERIOD_MS;
@@ -89,23 +83,13 @@ void i2c_task(void *pvParameters) {
 		calculateUncompensatedTemperature(&parameters, &receiveBuffer[0]);
 		temp = calculateTrueTemperature(&parameters);
 
-		//TODO: ADC should take successive measurements,
-		// aveages them, then use dma to transefer them to
-		// where this task just reads the variables location.
 		pxRxedMessage.weather_data.current = temp;
-		//strncpy(&pxRxedMessage.ucData, &data, 20);
-		//pxRxedMessage->ucData = data;
-		pxRxedMessage.messageType = TEMPERATURE;
-
-		// Send a pointer to a struct AMessage object.  Don't block if the
-		// queue is already full.
+		pxRxedMessage.messageType = TEMPERATURE1;
 		xQueueSend( weatherMessageQueue, ( void * ) &pxRxedMessage, ( TickType_t ) 1 );
 
-		//testBMPCode();
 		vTaskDelay(xDelay);
 
 		//initiate a pressure conversion
-
 		sendBuffer[0] = 0xF4;
 		sendBuffer[1] = 0x34 + (parameters.oss << 6);
 		I2C_Read(0x77U, 2, &sendBuffer[0], 0, NULL);
@@ -117,16 +101,8 @@ void i2c_task(void *pvParameters) {
 		calculateUncompensatedPressure(&parameters, &receiveBuffer[0]);
 		temp = calculateTruePressure(&parameters);
 
-		//TODO: ADC should take successive measurements,
-		// aveages them, then use dma to transefer them to
-		// where this task just reads the variables location.
 		pxRxedMessage.weather_data.current = temp;
-		//strncpy(&pxRxedMessage.ucData, &data, 20);
-		//pxRxedMessage->ucData = data;
 		pxRxedMessage.messageType = PRESSURE;
-
-		// Send a pointer to a struct AMessage object.  Don't block if the
-		// queue is already full.
 		xQueueSend( weatherMessageQueue, ( void * ) &pxRxedMessage, ( TickType_t ) 1 );
 
 		vTaskDelay(xDelay);
