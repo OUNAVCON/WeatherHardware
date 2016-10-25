@@ -118,10 +118,8 @@ void testBMPCode(void){
 
 	const float Temp = 15.0;
 	const float Press = 69964;
-	float calculatedTemp;
-	float calulatedPressure;
 
-	calculatedTemp = calculateTrueTemperature(&parameters);
-	calculatedTemp = calculateTruePressure(&parameters);
+	float calculatedTemp = calculateTrueTemperature(&parameters);
+	float calculatedPress = calculateTruePressure(&parameters);
 
 }

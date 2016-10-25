@@ -6,9 +6,6 @@
 #include "queue.h"
 #include "timers.h"
 
-
-//TODO: Remove this once the digitalOutput.c has been created.
-#include "board.h"
 #include "../hardware/digitalOutput.h"
 #include "tasks/tasks.h"
 
@@ -23,8 +20,6 @@ void heartbeat_task(void *pvParameters) {
 
 	init_heartbeat_LED();
 		for(;;){
-			//LED_BLUE_TOGGLE();
-			//PRINTF("Hello world. %d\r\n", i);
 			toggle_heartbeat_LED();
 			vTaskDelay(xDelay);
 			}

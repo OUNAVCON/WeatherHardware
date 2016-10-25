@@ -46,7 +46,7 @@ void capture_init(void){
 	//wind speed
 	PORT_SetPinConfig(CAPTURE_GPIO_PORT, WINDSPEED_GPIO_PIN, &capturePinConfig);
 	//rain fall
-	//PORT_SetPinConfig(CAPTURE_GPIO_PORT, RAINFALL_GPIO_PIN, &capturePinConfig);
+	PORT_SetPinConfig(CAPTURE_GPIO_PORT, RAINFALL_GPIO_PIN, &capturePinConfig);
 
 	/* Affects PTB16 register */
 	gpio_pin_config_t capture_config = { kGPIO_DigitalInput, 0 };
@@ -57,10 +57,12 @@ void capture_init(void){
 	GPIO_PinInit(CAPTURE_GPIO, RAINFALL_GPIO_PIN, &capture_config);
 
 	EnableIRQ(CAPTURE_IRQ);
-	/* set windspeed interrupt pin */
+	/* set windspeed interrupt pin pulse is a 50% duty-cycle pulse so edge to edge is a period. */
 	PORT_SetPinInterruptConfig(CAPTURE_GPIO_PORT, WINDSPEED_GPIO_PIN, kPORT_InterruptRisingEdge);
-	/* set rain fall interrupt pin */
-	PORT_SetPinInterruptConfig(CAPTURE_GPIO_PORT, RAINFALL_GPIO_PIN, kPORT_InterruptRisingEdge);
+	/* set rain fall interrupt pin a change in state indicates that a measure has been made.
+	 * So a transition in either direction needs to be counted.
+	 */
+	PORT_SetPinInterruptConfig(CAPTURE_GPIO_PORT, RAINFALL_GPIO_PIN, kPORT_InterruptEitherEdge);
 
 }
 

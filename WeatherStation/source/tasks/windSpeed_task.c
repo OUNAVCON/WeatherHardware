@@ -1,5 +1,3 @@
-#include "tasks.h"
-
 /* FreeRTOS kernel includes. */
 #include "FreeRTOS.h"
 #include "task.h"
@@ -9,11 +7,11 @@
 
 #include "pin_mux.h"
 #include "clock_config.h"
-//TODO: Remove this once the digitalOutput.c has been created.
-//#include "board.h"
 #include "../hardware/capture.h"
 #include "../hardware/adc.h"
 #include "../algorithms/weather.h"
+
+#include "tasks.h"
 
 /* The software timer period. */
 #define SW_TIMER_PERIOD_MS (1000 / portTICK_PERIOD_MS)
@@ -67,14 +65,9 @@ void capture_task(void *pvParameters) {
  * @brief Software timer callback.
  */
 static void SwTimerCallback(TimerHandle_t xTimer) {
-	int windSpeedCount = 0;
-	int rainFallCount = 0;
-
-	windSpeedCount = readWindSpeedCounter();
-	windSpeedCountsPerSecond = (float) windSpeedCount;
+	windSpeedCountsPerSecond = (float) readWindSpeedCounter();
 	clearWindSpeedCounter();
 
-	rainFallCount = readRainFallCounter();
-	rainFallCountsPerSecond = (float) rainFallCount;
+	rainFallCountsPerSecond = (float) readRainFallCounter();
 	clearRainFallCounter();
 }

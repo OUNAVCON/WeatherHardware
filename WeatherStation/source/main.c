@@ -54,7 +54,7 @@ QueueHandle_t weatherMessageQueue;
 
 /* Task priorities. */
 #define hello_task_PRIORITY (configMAX_PRIORITIES - 1)
-
+#define weather_task_PRIORITY hello_task_PRIORITY
 
 /*!
  * @brief Application entry point.
@@ -63,8 +63,8 @@ int main(void) {
   /* Init board hardware. */
   BOARD_InitPins();
   BOARD_BootClockRUN();
- // BOARD_InitDebugConsole();
 
+  BaseType_t taskStatus = NULL;
   /* Create Queues */
   weatherMessageQueue = xQueueCreate( 5, sizeof( AWeatherMessage ) );
 
@@ -73,15 +73,13 @@ int main(void) {
       /* Queue was not created and must not be used. */
   }
 
-//for DHT11 code look here https://github.com/ErichStyger/mcuoneclipse/blob/master/Examples/KDS/FRDM-KL25Z/FRDM-KL25Z_DHT11/Sources/DHTxx.c
-
-
   /* Create RTOS task */
-  xTaskCreate(heartbeat_task, "Hello_task", configMINIMAL_STACK_SIZE, NULL, hello_task_PRIORITY, NULL);
-  xTaskCreate(i2c_task, "i2c_task", configMINIMAL_STACK_SIZE + 60, NULL, hello_task_PRIORITY, NULL);
-  xTaskCreate(lightSensor_task, "lightSensor_task", configMINIMAL_STACK_SIZE + 60, NULL, hello_task_PRIORITY, NULL);
-  xTaskCreate(weather_task, "weather_task", configMINIMAL_STACK_SIZE, NULL, hello_task_PRIORITY-1, NULL);
-  xTaskCreate(capture_task, "windSpeed_task", configMINIMAL_STACK_SIZE, NULL, hello_task_PRIORITY-1, NULL);
+  xTaskCreate(heartbeat_task, "HB", configMINIMAL_STACK_SIZE, NULL, hello_task_PRIORITY, NULL);
+  xTaskCreate(i2c_task, "px", configMINIMAL_STACK_SIZE + 60, NULL, hello_task_PRIORITY, NULL);
+  xTaskCreate(lightSensor_task, "AmbL", configMINIMAL_STACK_SIZE + 60, NULL, hello_task_PRIORITY, NULL);
+  xTaskCreate(weather_task, "WX", configMINIMAL_STACK_SIZE + 60, NULL, weather_task_PRIORITY, NULL);
+  xTaskCreate(capture_task, "WS_RF", configMINIMAL_STACK_SIZE, NULL, hello_task_PRIORITY-1, NULL);
+  xTaskCreate(dht_task, "RH", configMINIMAL_STACK_SIZE + 60, NULL, hello_task_PRIORITY-1, NULL);
 
   vTaskStartScheduler();
 

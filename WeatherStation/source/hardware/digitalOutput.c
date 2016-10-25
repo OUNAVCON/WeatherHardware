@@ -8,10 +8,8 @@
 
 
 void init_heartbeat_LED(void){
-	/* Define the init structure for the output LED pin*/
-	gpio_pin_config_t led_config = { kGPIO_DigitalOutput, 0, };
+	gpio_pin_config_t led_config = { kGPIO_DigitalOutput, 0};
 
-	/* Init output LED GPIO. */
 	GPIO_PinInit(BOARD_LED_RED_GPIO, BOARD_LED_RED_GPIO_PIN, &led_config);
 }
 

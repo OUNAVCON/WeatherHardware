@@ -9,8 +9,6 @@
 
 /* Freescale includes. */
 #include "fsl_device_registers.h"
-//#include "board.h"
-
 #include "pin_mux.h"
 #include "clock_config.h"
 
@@ -68,12 +66,14 @@ void weather_task(void *pvParameters) {
 					(TickType_t ) 10)) {
 
 				switch (pxRxedMessage.messageType) {
-				case TEMPERATURE:
-					weather.temperature.current = pxRxedMessage.weather_data.current;
-
+				case TEMPERATURE1:
+					weather.temperature1.current = pxRxedMessage.weather_data.current;
 					break;
 				case HUMIDITY:
 					weather.humidity.current = pxRxedMessage.weather_data.current;
+					break;
+				case TEMPERATURE2:
+					weather.temperature2.current = pxRxedMessage.weather_data.current;
 					break;
 				case PRESSURE:
 					weather.pressure.current = pxRxedMessage.weather_data.current;

@@ -7,8 +7,9 @@ typedef struct{
 
 
 typedef struct{
-	WEATHER_ELEMENT_T temperature;
+	WEATHER_ELEMENT_T temperature1;
 	WEATHER_ELEMENT_T humidity;
+	WEATHER_ELEMENT_T temperature2;
 	WEATHER_ELEMENT_T pressure;
 	WEATHER_ELEMENT_T windSpeed;
 	WEATHER_ELEMENT_T rainFall;
@@ -16,7 +17,7 @@ typedef struct{
 }WEATHER;
 
 
-typedef enum {TEMPERATURE, HUMIDITY, PRESSURE, LIGHTSENSOR, WINDSPEED, RAINFALL} weather;
+typedef enum {TEMPERATURE1, HUMIDITY, TEMPERATURE2, PRESSURE, LIGHTSENSOR, WINDSPEED, RAINFALL} weather;
 
 typedef struct
 {
