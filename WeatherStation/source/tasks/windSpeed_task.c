@@ -27,7 +27,7 @@ static float windSpeedCountsPerSecond = 0.0;
  * The ISR increments a counter.
  */
 void capture_task(void *pvParameters) {
-	const TickType_t xDelay = 5000 / portTICK_PERIOD_MS;
+	const TickType_t xDelay = 10000 / portTICK_PERIOD_MS;
 	TimerHandle_t SwTimerHandle = NULL;
 	AWeatherMessage pxRxedMessage;
 	extern QueueHandle_t weatherMessageQueue;

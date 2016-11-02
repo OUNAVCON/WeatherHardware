@@ -14,7 +14,7 @@
  */
 void lightSensor_task(void *pvParameters) {
 
-	const TickType_t xDelay = 5000 / portTICK_PERIOD_MS;
+	const TickType_t xDelay = 10000 / portTICK_PERIOD_MS;
 	WEATHER_ELEMENT_T ambientLight;
 	AWeatherMessage pxRxedMessage;
 	extern QueueHandle_t weatherMessageQueue;
@@ -27,7 +27,8 @@ void lightSensor_task(void *pvParameters) {
 		//TODO: ADC should take successive measurements,
 		// averages them, then use dma to transfer them to
 		// where this task just reads the variables location.
-		pxRxedMessage.weather_data.current = getLightSensorValue();
+		int read = getLightSensorValue();
+		pxRxedMessage.weather_data.current = (float)read;
 		pxRxedMessage.messageType = LIGHTSENSOR;
 
 		// Send a pointer to a struct AMessage object.  Don't block if the

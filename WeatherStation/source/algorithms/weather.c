@@ -21,27 +21,27 @@ void getDefaultWeather(WEATHER* weather) {
 char* createJSONFromWeather(WEATHER* weather) {
 	char temp[16];
 
-	strcpy(result, "{weather:{temperature1:");
+	strcpy(result, "{\"wx\":{\"t1\":\"");
 	sprintf(temp, "%d", (int16_t)(weather->temperature1.current*10));
 	strcat(result, temp);
-	strcat(result, ",humidity:");
+	strcat(result, "\",\"h\":\"");
 	sprintf(temp, "%d", (int16_t)weather->humidity.current);
 	strcat(result, temp);
-	strcat(result, ",temperature2:");
+	strcat(result, "\",\"t2\":\"");
 	sprintf(temp, "%d", (int16_t)(weather->temperature2.current*10));
 	strcat(result, temp);
-	strcat(result, ",pressure:");
+	strcat(result, "\",\"p\":\"");
 	sprintf(temp, "%d",(int16_t)( weather->pressure.current*100));
 	strcat(result, temp);
-	strcat(result, ",ambientLight:");
+	strcat(result, "\",\"al\":\"");
 	sprintf(temp, "%d", (int16_t)weather->ambientLight.current);
 	strcat(result, temp);
-	strcat(result, ",windSpeed:");
+	strcat(result, "\",\"ws\":\"");
 	sprintf(temp, "%d", (int16_t)weather->windSpeed.current);
 	strcat(result, temp);
-	strcat(result, ",rainFall:");
+	strcat(result, "\",\"rf\":\"");
 	sprintf(temp, "%d", (int16_t)weather->rainFall.current);
 	strcat(result, temp);
-	strcat(result, "}}\r\n");
+	strcat(result, "\"}}\r\n");
 	return &result[0];
 }

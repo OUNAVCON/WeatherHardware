@@ -51,11 +51,12 @@
 QueueHandle_t weatherMessageQueue;
 
 
-
 /* Task priorities. */
 #define hello_task_PRIORITY (configMAX_PRIORITIES - 1)
-#define weather_task_PRIORITY hello_task_PRIORITY
-
+#define weather_task_PRIORITY 2
+#define capture_task_PRIORITY 3
+#define dht_task_PRIORITY 3
+#define lightSensor_task_PRIORITY 4
 /*!
  * @brief Application entry point.
  */
@@ -64,7 +65,6 @@ int main(void) {
   BOARD_InitPins();
   BOARD_BootClockRUN();
 
-  BaseType_t taskStatus = NULL;
   /* Create Queues */
   weatherMessageQueue = xQueueCreate( 5, sizeof( AWeatherMessage ) );
 
@@ -74,12 +74,13 @@ int main(void) {
   }
 
   /* Create RTOS task */
-  xTaskCreate(heartbeat_task, "HB", configMINIMAL_STACK_SIZE, NULL, hello_task_PRIORITY, NULL);
+  // use heartbeat with debug and maybe for future use.
+  // xTaskCreate(heartbeat_task, "HB", configMINIMAL_STACK_SIZE, NULL, hello_task_PRIORITY, NULL);
   xTaskCreate(i2c_task, "px", configMINIMAL_STACK_SIZE + 60, NULL, hello_task_PRIORITY, NULL);
   xTaskCreate(lightSensor_task, "AmbL", configMINIMAL_STACK_SIZE + 60, NULL, hello_task_PRIORITY, NULL);
   xTaskCreate(weather_task, "WX", configMINIMAL_STACK_SIZE + 60, NULL, weather_task_PRIORITY, NULL);
-  xTaskCreate(capture_task, "WS_RF", configMINIMAL_STACK_SIZE, NULL, hello_task_PRIORITY-1, NULL);
-  xTaskCreate(dht_task, "RH", configMINIMAL_STACK_SIZE + 60, NULL, hello_task_PRIORITY-1, NULL);
+  xTaskCreate(capture_task, "WS_RF", configMINIMAL_STACK_SIZE, NULL, capture_task_PRIORITY-1, NULL);
+  xTaskCreate(dht_task, "RH", configMINIMAL_STACK_SIZE + 60, NULL, dht_task_PRIORITY-1, NULL);
 
   vTaskStartScheduler();
 

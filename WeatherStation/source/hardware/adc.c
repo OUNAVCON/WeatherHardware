@@ -27,7 +27,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+#include "FreeRTOS.h"
+#include "task.h"
 #include "fsl_debug_console.h"
 #include "board.h"
 #include "fsl_adc16.h"
@@ -39,7 +40,7 @@
  ******************************************************************************/
 #define LIGHTSENSOR_ADC16_BASE ADC0
 #define LIGHTSENSOR_ADC16_CHANNEL_GROUP 0U
-#define LIGHTSENSOR_ADC16_USER_CHANNEL 0U
+#define LIGHTSENSOR_ADC16_USER_CHANNEL 9U
 
 /*******************************************************************************
  * Prototypes
@@ -107,6 +108,7 @@ int getLightSensorValue() {
 			== (kADC16_ChannelConversionDoneFlag
 					& ADC16_GetChannelStatusFlags(LIGHTSENSOR_ADC16_BASE,
 							LIGHTSENSOR_ADC16_CHANNEL_GROUP))) {
+		vTaskDelay(3);
 	}
 	//PRINTF("ADC Value: %d\r\n", ADC16_GetChannelConversionValue(LIGHTSENSOR_ADC16_BASE, LIGHTSENSOR_ADC16_CHANNEL_GROUP));
 	int result = ADC16_GetChannelConversionValue(LIGHTSENSOR_ADC16_BASE,
