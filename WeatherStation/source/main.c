@@ -75,7 +75,7 @@ int main(void) {
 
   /* Create RTOS task */
   // use heartbeat with debug and maybe for future use.
-  // xTaskCreate(heartbeat_task, "HB", configMINIMAL_STACK_SIZE, NULL, hello_task_PRIORITY, NULL);
+  xTaskCreate(heartbeat_task, "HB", configMINIMAL_STACK_SIZE, NULL, hello_task_PRIORITY, NULL);
   xTaskCreate(i2c_task, "px", configMINIMAL_STACK_SIZE + 60, NULL, hello_task_PRIORITY, NULL);
   xTaskCreate(lightSensor_task, "AmbL", configMINIMAL_STACK_SIZE + 60, NULL, hello_task_PRIORITY, NULL);
   xTaskCreate(weather_task, "WX", configMINIMAL_STACK_SIZE + 60, NULL, weather_task_PRIORITY, NULL);
