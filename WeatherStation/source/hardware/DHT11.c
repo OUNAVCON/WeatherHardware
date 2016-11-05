@@ -85,7 +85,7 @@ void convertBitsToBytes(){
 		}
 
  humidity = (float) results[0];
- temperature = (float)results[2] + ((float)results[3])/256.0;
+ temperature = (float)results[2] + (((float)results[3])/256.0);
 }
 
 static void delay(uint32_t clockCycles) {

@@ -33,12 +33,12 @@ void calculateUncompensatedTemperature(BMP180_Parameters* parameters, uint8_t* d
  * @pre the coefficients and the uncompensated temperature values are populated.
  */
 float calculateTrueTemperature(BMP180_Parameters* parameters){
-	int16_t x1, x2;
+	int16_t x1, x2, x3;
 
 	x1 = (parameters->uncompensatedTemperature - parameters->AC6) * parameters->AC5 / (1<<15);
-	x2 = (parameters->MC * 1<<11)/(x1 + parameters->MD);
+	x2 = (parameters->MC * (1<<11))/(x1 + parameters->MD);
 	parameters->B5 = x1+x2;
-	parameters->trueTemperature = ((float)((parameters->B5 + 8)/(1<<4)))*0.1;
+	parameters->trueTemperature = ((float) ((parameters->B5 + 8)/(1<<4)) ) * 0.1;
 	return parameters->trueTemperature;
 }
 
@@ -58,7 +58,7 @@ float calculateTruePressure(BMP180_Parameters* parameters){
 	b3 = (((parameters->AC1 * 4 + x3)<<parameters->oss)+2)/4;
 	x1 = parameters->AC3 * b6 / (1<<13);
 	x2 = parameters->B1 * (b6 * b6/(1<<12)) / (1<<16);
-	x3 = ((x1 + x2) +2)/(1<<2);
+	x3 = ((x1 + x2) + 2)/(1<<2);
 	b4 = parameters->AC4 * ((uint16_t)(x3 + 32768)) / (1<<15);
 	b7 = (uint16_t)(parameters->uncompensatedPressure - b3) * (50000 >> parameters->oss);
 	if(b7 < 0x80000000){
@@ -72,7 +72,7 @@ float calculateTruePressure(BMP180_Parameters* parameters){
 	x2 = (-7357 * p)/(1<<16);
 	x11 = (x4 + x2 + 3791)/(1<<4);
 	p = p + x11;
-	parameters->truePressure = ((float)p)/1000.0;
+	parameters->truePressure = ((float)p)*0.001;
 	return parameters->truePressure;
 }
 

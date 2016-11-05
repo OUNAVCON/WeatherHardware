@@ -84,7 +84,7 @@ void i2c_task(void *pvParameters) {
 		temp = calculateTrueTemperature(&parameters);
 
 		pxRxedMessage.weather_data.current = temp;
-		pxRxedMessage.messageType = TEMPERATURE1;
+		pxRxedMessage.messageType = TEMPERATURE2;
 		xQueueSend( weatherMessageQueue, ( void * ) &pxRxedMessage, ( TickType_t ) 1 );
 
 		vTaskDelay(xDelay);
