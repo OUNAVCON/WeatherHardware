@@ -31,7 +31,7 @@ char* createJSONFromWeather(WEATHER* weather) {
 	sprintf(temp, "%d", (int16_t)(weather->temperature2.current*10));
 	strcat(result, temp);
 	strcat(result, "\",\"p\":\"");
-	sprintf(temp, "%d",(int16_t)( weather->pressure.current*1000));
+	sprintf(temp, "%d",(uint32_t)( weather->pressure.current*1000));
 	strcat(result, temp);
 	strcat(result, "\",\"al\":\"");
 	sprintf(temp, "%d", (int16_t)weather->ambientLight.current);

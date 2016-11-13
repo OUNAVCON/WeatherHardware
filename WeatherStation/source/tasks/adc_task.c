@@ -18,7 +18,7 @@ void lightSensor_task(void *pvParameters) {
 	WEATHER_ELEMENT_T ambientLight;
 	AWeatherMessage pxRxedMessage;
 	extern QueueHandle_t weatherMessageQueue;
-
+	int read = 0;
 	pxRxedMessage.weather_data = ambientLight;
 
 	init_lightSensor();
@@ -27,7 +27,7 @@ void lightSensor_task(void *pvParameters) {
 		//TODO: ADC should take successive measurements,
 		// averages them, then use dma to transfer them to
 		// where this task just reads the variables location.
-		int read = getLightSensorValue();
+		read = getLightSensorValue();
 		pxRxedMessage.weather_data.current = (float)read;
 		pxRxedMessage.messageType = LIGHTSENSOR;
 

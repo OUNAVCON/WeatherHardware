@@ -36,6 +36,10 @@ void weather_task(void *pvParameters) {
 	uint32_t ulNotificationValue;
 	const TickType_t xDelay = 500 / portTICK_PERIOD_MS;
 	char* weatherJSON;
+	uint8_t receive_buffer;
+	uint8_t number_of_bytes = 1;
+	size_t currentByte;
+
 
 	init_serial();
 	getDefaultWeather(&weather);
@@ -60,10 +64,9 @@ void weather_task(void *pvParameters) {
 
 	for (;;) {
 		if (weatherMessageQueue != 0) {
-			// Receive a message on the created queue.  Block for 10 ticks if a
+			// Receive a message on the created queue.  Don't block, on process if a
 			// message is not immediately available.
-			if (xQueueReceive(weatherMessageQueue, &(pxRxedMessage),
-					(TickType_t ) 10)) {
+			if (xQueueReceive(weatherMessageQueue, &(pxRxedMessage), 0)) {
 
 				switch (pxRxedMessage.messageType) {
 				case TEMPERATURE1:
@@ -90,6 +93,9 @@ void weather_task(void *pvParameters) {
 				}
 			}
 		}
+
+		//receive_serial(&receive_buffer, &number_of_bytes, &currentByte);
+		//send_serial(&receive_buffer);
 
 	    /* Wait to be notified that the transmission is complete.  Note the first
 	    parameter is pdTRUE, which has the effect of clearing the task's notification

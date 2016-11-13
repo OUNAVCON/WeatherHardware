@@ -62,10 +62,6 @@ void send_serial(uint8_t* send_buffer) {
 	//UART_RTOS_Deinit(&handle);
 }
 
-void receive_serial(uint8_t* receive_buffer, uint8_t number_of_bytes) {
-	size_t n;
-	UART_RTOS_Receive(&handle, &background_buffer, sizeof(background_buffer),
-			&n);
-
-	//kStatus_Success
+void receive_serial(uint8_t* receive_buffer, uint8_t* number_of_bytes, size_t* currentByte) {
+	UART_RTOS_Receive(&handle, &background_buffer, sizeof(background_buffer), currentByte);
 }

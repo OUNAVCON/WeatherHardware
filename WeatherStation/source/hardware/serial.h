@@ -12,7 +12,7 @@
 void init_serial(void);
 
 void send_serial(uint8_t* send_buffer);
-void receive_serial(uint8_t* receive_buffer, uint8_t number_of_bytes);
+void receive_serial(uint8_t* receive_buffer, uint8_t* number_of_bytes, size_t* currentByte);
 
 
 

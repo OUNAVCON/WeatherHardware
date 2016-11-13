@@ -33,7 +33,7 @@ void calculateUncompensatedTemperature(BMP180_Parameters* parameters, uint8_t* d
  * @pre the coefficients and the uncompensated temperature values are populated.
  */
 float calculateTrueTemperature(BMP180_Parameters* parameters){
-	int16_t x1, x2, x3;
+	int16_t x1, x2;
 
 	x1 = (parameters->uncompensatedTemperature - parameters->AC6) * parameters->AC5 / (1<<15);
 	x2 = (parameters->MC * (1<<11))/(x1 + parameters->MD);

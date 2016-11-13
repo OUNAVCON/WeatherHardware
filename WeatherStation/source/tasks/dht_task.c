@@ -28,7 +28,7 @@ extern QueueHandle_t weatherMessageQueue;
  */
 void dht_task(void *pvParameters) {
 
-	const TickType_t xDelay = 2000 / portTICK_PERIOD_MS;
+	const TickType_t xDelay = 5000 / portTICK_PERIOD_MS;
 
 	init_DHT11();
 

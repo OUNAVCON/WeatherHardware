@@ -9,7 +9,6 @@
 
 void init_heartbeat_LED(void){
 	gpio_pin_config_t led_config = { kGPIO_DigitalOutput, 0};
-
 	GPIO_PinInit(BOARD_LED_RED_GPIO, BOARD_LED_RED_GPIO_PIN, &led_config);
 }
 

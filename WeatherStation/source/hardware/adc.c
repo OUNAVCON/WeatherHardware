@@ -111,7 +111,6 @@ int getLightSensorValue() {
 		vTaskDelay(3);
 	}
 	//PRINTF("ADC Value: %d\r\n", ADC16_GetChannelConversionValue(LIGHTSENSOR_ADC16_BASE, LIGHTSENSOR_ADC16_CHANNEL_GROUP));
-	int result = ADC16_GetChannelConversionValue(LIGHTSENSOR_ADC16_BASE,
+	return ADC16_GetChannelConversionValue(LIGHTSENSOR_ADC16_BASE,
 			LIGHTSENSOR_ADC16_CHANNEL_GROUP);
-	return result;
 }
